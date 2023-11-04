@@ -32,13 +32,12 @@ jobs:
     steps: 
       - name: Clone the repository
         uses: actions/checkout@v3
-        with:
-          sparse-checkout: |
-            src/*
-          sparse-checkout-cone-mode: false
 
       # - name: Install dependencies
       #   run: pip install -r ${{ github.workspace }}/src/requirements.txt
+
+      - name: switch dir
+        run: cd ${{ github.workspace }}/src
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/python@master
