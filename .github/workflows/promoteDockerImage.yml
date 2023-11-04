@@ -38,6 +38,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           npm install snyk -g
+          snyk auth ${{ secrets.SNYK_TOKEN }}
           snyk test
 
   push_image:
