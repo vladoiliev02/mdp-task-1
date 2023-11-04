@@ -13,12 +13,19 @@ jobs:
   sonarCloud:
     runs-on: ubuntu-latest
     steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+        with:
+          path: .
+
       - name: Sonar Cloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
           projectBaseDir: ./src
       
   push_image:
+    needs: 
+      - sonarCloud
     runs-on: ubuntu-latest
     steps:
       - name: Clone the repository
