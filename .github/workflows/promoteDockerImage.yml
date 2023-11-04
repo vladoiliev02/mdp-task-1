@@ -19,17 +19,34 @@ jobs:
       - name: Sonar Cloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
-          projectBaseDir: ./src
+          projectBaseDir: ${{ github.workspace }}/src
           args: >
             -Dsonar.organization=vladoiliev02
             -Dsonar.projectKey=vladoiliev02_mdp-task-1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      
+  
+  snyk:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Clone the repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: pip install -r ${{ github.workspace }}/src/requirements.txt
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: ${{ github.workspace }}/src
+
   push_image:
     needs: 
       - sonarCloud
+      - snyk
     runs-on: ubuntu-latest
     steps:
       - name: Clone the repository
