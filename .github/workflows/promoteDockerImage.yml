@@ -10,7 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: py-app:latest
+  IMAGE_NAME: py-app
+  IMAGE_TAG: latest
 
 jobs:
   sonarCloud:
@@ -54,12 +55,12 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Build docker image
-        run: docker image build -t ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }} .
+        run: docker image build -t ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}
+          image-ref: ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -69,5 +70,5 @@ jobs:
       - name: Push docker image to registry
         run: |
           docker login --username ${{ vars.DOCKERHUB_USER }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
-          docker push ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}
+          docker push ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           docker logout
