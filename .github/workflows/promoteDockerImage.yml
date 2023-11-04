@@ -53,12 +53,12 @@ jobs:
       - name: Build docker image
         run: |
           docker image build -t ${{ vars.DOCKERHUB_USER }}/py-app:latest .
-          docker save -o ${{ vars.DOCKERHUB_USER }}/vuln-image.tar ${{ vars.DOCKERHUB_USER }}/py-app:latest
+          docker save -o ${{ github.workspace }}/vuln-image.tar ${{ vars.DOCKERHUB_USER }}/py-app:latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          input:  ${{ vars.DOCKERHUB_USER }}/vuln-image.tar
+          input:  ${{ github.workspace }}/vuln-image.tar
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
