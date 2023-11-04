@@ -51,8 +51,20 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Build docker image
-        run: docker image build -t ${{ vars.DOCKERHUB_USER }}/py-app:latest .
-      
+        run: |
+          docker image build -t ${{ vars.DOCKERHUB_USER }}/py-app:latest .
+          docker save -o ${{ vars.DOCKERHUB_USER }}/vuln-image.tar ${{ vars.DOCKERHUB_USER }}/py-app:latest
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          input:  ${{ vars.DOCKERHUB_USER }}/vuln-image.tar
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
       - name: Push docker image to registry
         run: |
           docker login --username ${{ vars.DOCKERHUB_USER }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
