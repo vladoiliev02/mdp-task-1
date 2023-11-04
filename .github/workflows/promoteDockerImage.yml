@@ -41,7 +41,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --file ${{ github.workspace }}/src/
+          args: --file=${{ github.workspace }}/src/
 
   push_image:
     needs: 
