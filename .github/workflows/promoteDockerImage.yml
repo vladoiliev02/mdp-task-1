@@ -10,6 +10,14 @@ on:
   workflow_dispatch:
 
 jobs:
+  sonarCloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sonar Cloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: ./src
+      
   push_image:
     runs-on: ubuntu-latest
     steps:
