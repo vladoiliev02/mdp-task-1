@@ -15,16 +15,11 @@ jobs:
     steps:
       - name: Clone the repository
         uses: actions/checkout@v3
-        with:
-          path: .
 
       - name: Sonar Cloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
           projectBaseDir: ./src
-          args: >
-            -Dsonar.organization=my-organization
-            -Dsonar.projectKey=my-projectkey
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
