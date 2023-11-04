@@ -19,7 +19,7 @@ jobs:
       - name: Sonar Cloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
-          projectBaseDir: ./src
+          projectBaseDir: ./src 
           args: >
             -Dsonar.organization=vladoiliev02
             -Dsonar.projectKey=vladoiliev02_mdp-task-1
