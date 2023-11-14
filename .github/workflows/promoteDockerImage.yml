@@ -11,23 +11,28 @@ on:
 
 env:
   IMAGE_NAME: py-app
-  IMAGE_TAG: latest
+  IMAGE_TAG: latest # ${{ github.sha }}
 
 jobs:
   editorconfig-checker:
     name: editorconfig-checker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: editorconfig-checker/action-editorconfig-checker@main
-      - run: editorconfig-checker
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Editorconfig check
+        uses: editorconfig-checker/action-editorconfig-checker@main
+      - name: Editorconfig check
+        run: editorconfig-checker
 
   markdown-lint:
     name: markdown-lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: npx markdown-cli *.md
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Markdown Lint
+        run: npx markdown-cli *.md
 
   flake8:
     runs-on: ubuntu-latest
@@ -96,19 +101,22 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - uses: actions/checkout@v3
-      - uses: joshuaavalon/flyway-action@v3.0.0
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Execute migration test
+        uses: joshuaavalon/flyway-action@v3.0.0
         with:
           url: jdbc:postgresql://postgres:5432/db
           user: user
           password: password
 
-  sonar-cloud:
+  sonar-cloud-sast:
+    name: Sonar Cloud SAST
     needs:
       -  database-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Clone the repository
+      - name: Checkout
         uses: actions/checkout@v3
       - name: Sonar Cloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -116,12 +124,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  snyk:
+  snyk-sca:
+    name: Snyk SCA
     needs:
       -  database-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Clone the repository
+      - name: Checkout
         uses: actions/checkout@v3
       - name: Run Snyk to check for vulnerabilities
         working-directory: ${{ github.workspace }}/src
@@ -133,11 +142,11 @@ jobs:
 
   push_image:
     needs:
-      - sonar-cloud
-      - snyk
+      - sonar-cloud-sast
+      - snyk-sca
     runs-on: ubuntu-latest
     steps:
-      - name: Clone the repository
+      - name: Checkout
         uses: actions/checkout@v3
       - name: Build docker image
         run: docker image build -t ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
