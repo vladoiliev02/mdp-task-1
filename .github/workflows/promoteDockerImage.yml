@@ -20,14 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: editorconfig-checker/action-editorconfig-checker@main
-      - run: editorconfig-check
+      - run: editorconfig-checker
 
   markdown-lint:
     name: markdown-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm markdown-cli **/*.md
+      - run: |
+          npm install markdown-cli
+          markdown-cli **/*.md
 
   flake8:
     runs-on: ubuntu-latest
