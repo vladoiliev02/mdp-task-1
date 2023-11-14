@@ -65,7 +65,7 @@ jobs:
         run: python3 -m unittest src/app_test.py
 
   git-leaks:
-    name: git-leaks
+    name: secret-detection
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -76,6 +76,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sonarCloud:
+    needs:
+      - editorconfig-checker
+      - markdown-lint
+      - flake8
+      - unit-tests
+      - git-leaks
     runs-on: ubuntu-latest
     steps:
       - name: Clone the repository
@@ -88,6 +94,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   snyk:
+    needs:
+      - editorconfig-checker
+      - markdown-lint
+      - flake8
+      - unit-tests
+      - git-leaks
     runs-on: ubuntu-latest
     steps:
       - name: Clone the repository
@@ -105,10 +117,6 @@ jobs:
     needs:
       - sonarCloud
       - snyk
-      - unit-tests
-      - flake8
-      - markdown-lint
-      - editorconfig-checker
     runs-on: ubuntu-latest
     steps:
       - name: Clone the repository
