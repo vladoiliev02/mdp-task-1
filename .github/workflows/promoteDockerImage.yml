@@ -27,9 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          npm install markdown-cli
-          npx markdown-cli ./*/*.md
+      - run: npx cli-markdown **/*.md
 
   flake8:
     runs-on: ubuntu-latest
