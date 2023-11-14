@@ -64,8 +64,6 @@ jobs:
       - name: Execute Unit Tests
         run: python3 -m unittest src/app_test.py
 
-  
-
   sonarCloud:
     runs-on: ubuntu-latest
     steps:
