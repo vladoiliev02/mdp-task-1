@@ -75,7 +75,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  database_test:
+  database-tests:
     needs:
       - editorconfig-checker
       - markdown-lint
@@ -103,7 +103,7 @@ jobs:
           user: user
           password: password
 
-  sonarCloud:
+  sonar-cloud:
     needs:
       -  database-tests
     runs-on: ubuntu-latest
@@ -133,7 +133,7 @@ jobs:
 
   push_image:
     needs:
-      - sonarCloud
+      - sonar-cloud
       - snyk
     runs-on: ubuntu-latest
     steps:
