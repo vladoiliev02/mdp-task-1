@@ -15,7 +15,7 @@ env:
 
 jobs:
   editorconfig-checker:
-    name: editorconfig-checker
+    name: Editorconfig Checker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
         run: editorconfig-checker
 
   markdown-lint:
-    name: markdown-lint
+    name: Markdown Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,6 +35,7 @@ jobs:
         run: npx markdown-cli *.md
 
   flake8:
+    name: Flake8
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
@@ -54,7 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   unit-tests:
-    name: unit-tests
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -70,7 +71,7 @@ jobs:
         run: python3 -m unittest src/app_test.py
 
   git-leaks:
-    name: secret-detection
+    name: Secret Detection
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -81,6 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   database-tests:
+    name: Database Test
     needs:
       - editorconfig-checker
       - markdown-lint
@@ -140,7 +142,8 @@ jobs:
           snyk auth ${{ secrets.SNYK_TOKEN }}
           snyk test
 
-  push_image:
+  push-image:
+    name: Scan and Push Image
     needs:
       - sonar-cloud-sast
       - snyk-sca
