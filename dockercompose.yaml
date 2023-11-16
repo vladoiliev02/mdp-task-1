@@ -9,7 +9,8 @@ services:
     image: postgres
     env_file:
       - .env
-    expose: 5432
+    expose:
+      - 5432
     networks:
       - database_network
 
@@ -25,6 +26,6 @@ services:
     networks:
       - database_network
 
-network:
+networks:
   database_network:
     driver: bridge
