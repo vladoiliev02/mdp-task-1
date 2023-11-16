@@ -1,0 +1,30 @@
+# You will need to create a .env file localy containing the following environment variables:
+#   - POSTGRES_USER
+#   - POSTGRES_PASSWORD
+#   - POSTGRES_DB
+
+version: "3.8"
+services:
+  database:
+    image: postgres
+    env_file:
+      - .env
+    expose: 5432
+    networks:
+      - database_network
+
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:postgresql://database:5432/${POSTGRES_DB} -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} -connectRetries=60 migrate
+    env_file:
+      - .env
+    depends_on:
+      - database
+    volumes:
+      - ./sql:/flyway/sql
+    networks:
+      - database_network
+
+network:
+  database_network:
+    driver: bridge
